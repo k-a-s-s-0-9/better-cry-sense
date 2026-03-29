@@ -5,7 +5,6 @@ This project is an advanced remake of the original CrySense repository. While th
 ## Datasets
 * https://www.kaggle.com/datasets/aniruth100/baby-cry-detection?select=donateacry_corpus_cleaned_and_updated_data
 * https://data.mendeley.com/datasets/hbppd883sd/1
-* https://github.com/gveres/donateacry-corpus
 
 # Tech Stack
 * Deep Learning: PyTorch / Keras (TensorFlow)
