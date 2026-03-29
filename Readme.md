@@ -2,6 +2,11 @@
 
 This project is an advanced remake of the original CrySense repository. While the baseline used static Image Classification (CNNs) on spectrograms, our version treats baby cries as time-series audio signals. By combining Convolutional Neural Networks (CNN) for frequency feature extraction with Long Short-Term Memory (LSTM) networks for temporal rhythm analysis, we aim to surpass the 85.7% accuracy barrier.
 
+## Datasets
+* https://www.kaggle.com/datasets/aniruth100/baby-cry-detection?select=donateacry_corpus_cleaned_and_updated_data
+* https://data.mendeley.com/datasets/hbppd883sd/1
+* https://github.com/gveres/donateacry-corpus
+
 # Tech Stack
 * Deep Learning: PyTorch / Keras (TensorFlow)
 * Audio Processing: Librosa, Torchaudio, Audiomentations
