@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
 
 # --- CONFIGURATION ---
-CATEGORY = "belly_pain"  # Options: belly_pain, burping, discomfort, hungry, tired
+CATEGORY = "tired"  # Options: belly_pain, burping, discomfort, hungry, tired
 
 # This finds the root directory (better-cry-sense) regardless of where you run it
 BASE_DIR = Path(__file__).resolve().parent.parent
