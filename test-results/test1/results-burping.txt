@@ -1,0 +1,68 @@
+Auditing Category: burping
+Found 8 raw files and 50 processed files.
+==================================================
+
+Raw File: 5afc6a14-a9d8-45f8-b31d-c79dd87cc8c6-1430757039803-1.7-m-48-bu.wav
+   -> --PASS-- | Corr: 0.9778 | extra_0_5afc6a14-a9d8-45f8-b31d-c79dd87cc8c6-1430757039803-1.7-m-48-bu.wav
+   -> --PASS-- | Corr: 0.9774 | extra_1_5afc6a14-a9d8-45f8-b31d-c79dd87cc8c6-1430757039803-1.7-m-48-bu.wav
+   -> --PASS-- | Corr: 0.9775 | extra_2_5afc6a14-a9d8-45f8-b31d-c79dd87cc8c6-1430757039803-1.7-m-48-bu.wav
+   -> --PASS-- | Corr: 0.9777 | extra_3_5afc6a14-a9d8-45f8-b31d-c79dd87cc8c6-1430757039803-1.7-m-48-bu.wav
+   -> --FAIL-- | Corr: 1.0000 | loud_5afc6a14-a9d8-45f8-b31d-c79dd87cc8c6-1430757039803-1.7-m-48-bu.wav
+   -> --PASS-- | Corr: 0.9781 | noise_5afc6a14-a9d8-45f8-b31d-c79dd87cc8c6-1430757039803-1.7-m-48-bu.wav
+------------------------------
+Raw File: 79FF400A-97E2-4701-987D-C7C850D5523C-1430089648-1.0-f-48-bu.wav
+   -> --PASS-- | Corr: 0.9208 | extra_0_79FF400A-97E2-4701-987D-C7C850D5523C-1430089648-1.0-f-48-bu.wav
+   -> --PASS-- | Corr: 0.9210 | extra_1_79FF400A-97E2-4701-987D-C7C850D5523C-1430089648-1.0-f-48-bu.wav
+   -> --PASS-- | Corr: 0.9204 | extra_2_79FF400A-97E2-4701-987D-C7C850D5523C-1430089648-1.0-f-48-bu.wav
+   -> --PASS-- | Corr: 0.9205 | extra_3_79FF400A-97E2-4701-987D-C7C850D5523C-1430089648-1.0-f-48-bu.wav
+   -> --FAIL-- | Corr: 1.0000 | loud_79FF400A-97E2-4701-987D-C7C850D5523C-1430089648-1.0-f-48-bu.wav
+   -> --PASS-- | Corr: 0.9198 | noise_79FF400A-97E2-4701-987D-C7C850D5523C-1430089648-1.0-f-48-bu.wav
+------------------------------
+Raw File: 7A864194-4B6B-4850-ABBF-0C2A8170107B-1436846915-1.1-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9662 | extra_0_7A864194-4B6B-4850-ABBF-0C2A8170107B-1436846915-1.1-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9673 | extra_1_7A864194-4B6B-4850-ABBF-0C2A8170107B-1436846915-1.1-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9661 | extra_2_7A864194-4B6B-4850-ABBF-0C2A8170107B-1436846915-1.1-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9665 | extra_3_7A864194-4B6B-4850-ABBF-0C2A8170107B-1436846915-1.1-f-26-bu.wav
+   -> --FAIL-- | Corr: 1.0000 | loud_7A864194-4B6B-4850-ABBF-0C2A8170107B-1436846915-1.1-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9669 | noise_7A864194-4B6B-4850-ABBF-0C2A8170107B-1436846915-1.1-f-26-bu.wav
+------------------------------
+Raw File: 7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430232208-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9308 | extra_0_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430232208-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9320 | extra_1_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430232208-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9313 | extra_2_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430232208-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9313 | extra_3_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430232208-1.0-f-26-bu.wav
+   -> --FAIL-- | Corr: 0.9996 | loud_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430232208-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9314 | noise_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430232208-1.0-f-26-bu.wav
+------------------------------
+Raw File: 7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430540826-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9631 | extra_0_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430540826-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9628 | extra_1_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430540826-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9629 | extra_2_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430540826-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9627 | extra_3_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430540826-1.0-f-26-bu.wav
+   -> --FAIL-- | Corr: 0.9998 | loud_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430540826-1.0-f-26-bu.wav
+   -> --PASS-- | Corr: 0.9628 | noise_7E4B9C14-F955-4BED-9B03-7F3096A6CBFF-1430540826-1.0-f-26-bu.wav
+------------------------------
+Raw File: AEA8AE04-D00E-48A7-8A0B-6D87E2175121-1430563241-1.0-f-72-bu.wav
+   -> --PASS-- | Corr: 0.9580 | extra_0_AEA8AE04-D00E-48A7-8A0B-6D87E2175121-1430563241-1.0-f-72-bu.wav
+   -> --PASS-- | Corr: 0.9577 | extra_1_AEA8AE04-D00E-48A7-8A0B-6D87E2175121-1430563241-1.0-f-72-bu.wav
+   -> --PASS-- | Corr: 0.9579 | extra_2_AEA8AE04-D00E-48A7-8A0B-6D87E2175121-1430563241-1.0-f-72-bu.wav
+   -> --PASS-- | Corr: 0.9577 | extra_3_AEA8AE04-D00E-48A7-8A0B-6D87E2175121-1430563241-1.0-f-72-bu.wav
+   -> --FAIL-- | Corr: 0.9999 | loud_AEA8AE04-D00E-48A7-8A0B-6D87E2175121-1430563241-1.0-f-72-bu.wav
+   -> --PASS-- | Corr: 0.9579 | noise_AEA8AE04-D00E-48A7-8A0B-6D87E2175121-1430563241-1.0-f-72-bu.wav
+------------------------------
+Raw File: af30880e-5f98-4dc0-b37a-be6b21fa0ba3-1431240072536-1.7-m-26-bu.wav
+   -> --FAIL-- | Corr: 0.9804 | extra_0_af30880e-5f98-4dc0-b37a-be6b21fa0ba3-1431240072536-1.7-m-26-bu.wav
+   -> --FAIL-- | Corr: 0.9807 | extra_1_af30880e-5f98-4dc0-b37a-be6b21fa0ba3-1431240072536-1.7-m-26-bu.wav
+   -> --FAIL-- | Corr: 0.9806 | extra_2_af30880e-5f98-4dc0-b37a-be6b21fa0ba3-1431240072536-1.7-m-26-bu.wav
+   -> --FAIL-- | Corr: 0.9804 | extra_3_af30880e-5f98-4dc0-b37a-be6b21fa0ba3-1431240072536-1.7-m-26-bu.wav
+   -> --FAIL-- | Corr: 0.9999 | loud_af30880e-5f98-4dc0-b37a-be6b21fa0ba3-1431240072536-1.7-m-26-bu.wav
+   -> --FAIL-- | Corr: 0.9800 | noise_af30880e-5f98-4dc0-b37a-be6b21fa0ba3-1431240072536-1.7-m-26-bu.wav
+------------------------------
+Raw File: F24DE44B-762C-4149-AC92-96A5E57ED118-1430816949-1.0-m-04-bu.wav
+   -> --PASS-- | Corr: 0.9044 | extra_0_F24DE44B-762C-4149-AC92-96A5E57ED118-1430816949-1.0-m-04-bu.wav
+   -> --PASS-- | Corr: 0.9049 | extra_1_F24DE44B-762C-4149-AC92-96A5E57ED118-1430816949-1.0-m-04-bu.wav
+   -> --PASS-- | Corr: 0.9044 | extra_2_F24DE44B-762C-4149-AC92-96A5E57ED118-1430816949-1.0-m-04-bu.wav
+   -> --PASS-- | Corr: 0.9038 | extra_3_F24DE44B-762C-4149-AC92-96A5E57ED118-1430816949-1.0-m-04-bu.wav
+   -> --FAIL-- | Corr: 1.0000 | loud_F24DE44B-762C-4149-AC92-96A5E57ED118-1430816949-1.0-m-04-bu.wav
+   -> --PASS-- | Corr: 0.9046 | noise_F24DE44B-762C-4149-AC92-96A5E57ED118-1430816949-1.0-m-04-bu.wav
+------------------------------
