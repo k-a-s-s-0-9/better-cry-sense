@@ -62,10 +62,9 @@ def process_and_save(file_path, category):
 # -------- Run for Entire Dataset --------
 if __name__ == "__main__":
 
-    # ✅ FIXED PATH (IMPORTANT: raw string + correct folder)
     current_dir = Path(__file__).resolve().parent
     base_folder = current_dir / "data" / "processed" / "augmented"
-    
+
     for category in os.listdir(base_folder):
         category_path = os.path.join(base_folder, category)
 
