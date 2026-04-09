@@ -1,4 +1,5 @@
 import os
+from matplotlib.path import Path
 import numpy as np
 import librosa
 
@@ -62,8 +63,9 @@ def process_and_save(file_path, category):
 if __name__ == "__main__":
 
     # ✅ FIXED PATH (IMPORTANT: raw string + correct folder)
-    base_folder = r"C:\Users\91700\OneDrive\Desktop\better-cry-sense\data\processed\augmented"
-
+    current_dir = Path(__file__).resolve().parent
+    base_folder = current_dir / "data" / "processed" / "augmented"
+    
     for category in os.listdir(base_folder):
         category_path = os.path.join(base_folder, category)
 
