@@ -10,15 +10,12 @@ def pre_emphasis(signal, alpha=0.97):
 # -------- Task 2.3: Segmentation --------
 def segment_audio(signal, sr, duration=2):
     segment_length = int(duration * sr)
-    segments = []
 
     for start in range(0, len(signal), segment_length):
         segment = signal[start:start + segment_length]
 
         if len(segment) == segment_length:
-            segments.append(segment)
-
-    return segments
+            yield segment   # memory efficient
 
 
 # -------- Task 2.2: Feature Extraction --------
@@ -28,31 +25,16 @@ def extract_features(signal, sr):
 
     mfcc = librosa.feature.mfcc(y=signal, sr=sr, n_mfcc=13)
 
+    # ✅ SAFE NORMALIZATION (avoid divide by zero)
+    log_mel = (log_mel - log_mel.min()) / (log_mel.max() - log_mel.min() + 1e-8)
+    mfcc = (mfcc - mfcc.min()) / (mfcc.max() - mfcc.min() + 1e-8)
+
     return log_mel, mfcc
 
 
-# -------- Full Pipeline --------
-def process_audio(file_path):
-    signal, sr = librosa.load(file_path, sr=None)
-
-    # Step 1: Pre-emphasis
-    signal = pre_emphasis(signal)
-
-    # Step 2: Segmentation
-    segments = segment_audio(signal, sr)
-
-    features = []
-
-    for seg in segments:
-        mel, mfcc = extract_features(seg, sr)
-        features.append((mel, mfcc))
-
-    return features
-
-
-# -------- Save Features (Category-wise, No Overwrite) --------
-def save_features(file_path, category):
-    base_output = "processed"
+# -------- Process + Save --------
+def process_and_save(file_path, category):
+    base_output = "data/processed"   # clean output folder
 
     file_name = os.path.splitext(os.path.basename(file_path))[0]
 
@@ -62,9 +44,16 @@ def save_features(file_path, category):
     os.makedirs(mel_dir, exist_ok=True)
     os.makedirs(mfcc_dir, exist_ok=True)
 
-    features = process_audio(file_path)
+    # ✅ Fixed sample rate
+    signal, sr = librosa.load(file_path, sr=22050)
 
-    for i, (mel, mfcc) in enumerate(features):
+    # Step 1: Pre-emphasis
+    signal = pre_emphasis(signal)
+
+    # Step 2 + 3: Segment + Extract + Save
+    for i, segment in enumerate(segment_audio(signal, sr)):
+        mel, mfcc = extract_features(segment, sr)
+
         np.save(os.path.join(mel_dir, f"{file_name}_mel_{i}.npy"), mel)
         np.save(os.path.join(mfcc_dir, f"{file_name}_mfcc_{i}.npy"), mfcc)
 
@@ -72,7 +61,8 @@ def save_features(file_path, category):
 # -------- Run for Entire Dataset --------
 if __name__ == "__main__":
 
-    base_folder = "data/raw/donateacry_corpus_cleaned_and_updated_data"
+    # ✅ FIXED PATH (IMPORTANT: raw string + correct folder)
+    base_folder = r"C:\Users\91700\OneDrive\Desktop\better-cry-sense\data\processed\augmented"
 
     for category in os.listdir(base_folder):
         category_path = os.path.join(base_folder, category)
@@ -85,6 +75,6 @@ if __name__ == "__main__":
                     file_path = os.path.join(category_path, file)
 
                     print("Processing:", file_path)
-                    save_features(file_path, category)
+                    process_and_save(file_path, category)
 
-    print("\n✅ Phase 2 preprocessing completed successfully!")
+    print("\n✅ Phase 2 completed successfully (no memory issues)!")
