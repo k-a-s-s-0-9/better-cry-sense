@@ -107,7 +107,7 @@ Goal: Transform raw audio into high-dimensional input for the CNN.
 
     Task 2.3: Segment long audio clips into fixed-length windows (e.g., 2-second chunks) to provide sequences for the LSTM.
 
-## Phase 3: Model Architecture & Training (Done)
+## Phase 3: Model Architecture & Training (in progress)
 
 Goal: Build and optimize the CNN + LSTM hybrid.
 
