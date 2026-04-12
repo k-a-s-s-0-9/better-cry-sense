@@ -1,4 +1,5 @@
 import os
+from xml.parsers.expat import model
 import numpy as np
 import tensorflow as tf
 from pathlib import Path
@@ -26,8 +27,7 @@ def main():
     setup_gpu()
 
     # 1. Fetch the Manifest (Safeguarded against Data Leakage)
-    train_files, train_labels, val_files, val_labels = build_dataset_manifest()
-
+    train_files, train_labels, val_files, val_labels, test_files, test_labels = build_dataset_manifest()
     if len(train_files) == 0:
         print("❌ CRITICAL ERROR: Pipeline returned empty datasets. Check your paths.")
         return
@@ -46,6 +46,7 @@ def main():
     print(f"📦 Spinning up Data Generators (Batch Size: {BATCH_SIZE})...")
     train_generator = MelSpecGenerator(train_files, train_labels, batch_size=BATCH_SIZE, shuffle=True)
     val_generator = MelSpecGenerator(val_files, val_labels, batch_size=BATCH_SIZE, shuffle=False)
+    test_generator = MelSpecGenerator(test_files, test_labels, batch_size=BATCH_SIZE, shuffle=False)
 
     # 4. Build the CRNN
     print("🏗️ Constructing CRNN Architecture...")
@@ -99,6 +100,17 @@ def main():
     )
 
     print("\n✅ Training Complete. The best model has been saved to the 'saved_models' folder.")
+
+    print("\n🏆 Running Final Evaluation on Unseen Test Set...")
+    test_generator = MelSpecGenerator(test_files, test_labels, batch_size=BATCH_SIZE, shuffle=False)
+    test_results = model.evaluate(test_generator)
+    print(f"Test Accuracy: {test_results[1]:.4f}")
+    print(f"Test AUC: {test_results[2]:.4f}")
+    print(f"Test Precision: {test_results[3]:.4f}")
+    print(f"Test Recall: {test_results[4]:.4f}")
+    print(f"Test F1 Score: {test_results[5]:.4f}")
+    print(f"Test MAE: {test_results[6]:.4f}")
+    print(f"Test MSE: {test_results[7]:.4f}")
 
 if __name__ == "__main__":
     main()
