@@ -1,0 +1,104 @@
+import os
+import numpy as np
+import tensorflow as tf
+from pathlib import Path
+from sklearn.utils.class_weight import compute_class_weight
+
+# Import your custom modules
+from data_pipeline import build_dataset_manifest, MelSpecGenerator
+from model_architecture import build_crnn_model
+
+def setup_gpu():
+#   Prevents TensorFlow from hoarding all your GPU VRAM at once
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        try:
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+            print(f"✅ GPU Memory Growth Enabled: {len(gpus)} GPU(s) found.")
+        except RuntimeError as e:
+            print(f"⚠️ GPU Setup Error: {e}")
+    else:
+        print("⚠️ No GPU detected. Training will run on CPU (this will be slower).")
+
+def main():
+    print("🚀 Initiating Better Cry Sense Training Sequence...")
+    setup_gpu()
+
+    # 1. Fetch the Manifest (Safeguarded against Data Leakage)
+    train_files, train_labels, val_files, val_labels = build_dataset_manifest()
+
+    if len(train_files) == 0:
+        print("❌ CRITICAL ERROR: Pipeline returned empty datasets. Check your paths.")
+        return
+
+    # 2. Calculate Class Weights (Handling the 382 Hungry vs 50 Burping Imbalance)
+    print("⚖️ Calculating Class Weights...")
+    classes = np.unique(train_labels)
+    weights = compute_class_weight(class_weight='balanced', classes=classes, y=train_labels)
+    weight_dict = dict(enumerate(weights))
+    
+    for class_id, weight in weight_dict.items():
+        print(f"   -> Class {class_id} Weight: {weight:.2f}")
+
+    # 3. Initialize Generators
+    BATCH_SIZE = 32
+    print(f"📦 Spinning up Data Generators (Batch Size: {BATCH_SIZE})...")
+    train_generator = MelSpecGenerator(train_files, train_labels, batch_size=BATCH_SIZE, shuffle=True)
+    val_generator = MelSpecGenerator(val_files, val_labels, batch_size=BATCH_SIZE, shuffle=False)
+
+    # 4. Build the CRNN
+    print("🏗️ Constructing CRNN Architecture...")
+    # Assuming the shape you found earlier: (128, 87) + 1 for the channel
+    model = build_crnn_model(input_shape=(128, 87, 1), num_classes=5)
+
+    # 5. Define Callbacks (The Safety Nets)
+    checkpoint_dir = Path("saved_models")
+    checkpoint_dir.mkdir(exist_ok=True)
+    
+    callbacks = [
+        # Stops training if Validation Loss doesn't improve for 8 epochs
+        tf.keras.callbacks.EarlyStopping(
+            monitor='val_loss',
+            patience=8,
+            restore_best_weights=True,
+            verbose=1
+        ),
+        # Saves the absolute best version of the model to your hard drive
+        tf.keras.callbacks.ModelCheckpoint(
+            filepath=str(checkpoint_dir / "best_crnn_model.keras"),
+            monitor='val_accuracy',
+            save_best_only=True,
+            verbose=1
+        ),
+        # Automatically lowers the learning rate if the model gets "stuck"
+        tf.keras.callbacks.ReduceLROnPlateau(
+            monitor='val_loss',
+            factor=0.5,
+            patience=3,
+            min_lr=1e-6,
+            verbose=1
+        ),
+        tf.keras.callbacks.CSVLogger(
+            filename='training_log.csv',
+            separator=',',
+            append=False # Set to True if you are resuming a stopped training run
+        )
+    ]
+
+    # 6. Ignite the Training Loop
+    EPOCHS = 50
+    print(f"\n🔥 Starting Training for up to {EPOCHS} Epochs...")
+    
+    history = model.fit(
+        train_generator,
+        validation_data=val_generator,
+        epochs=EPOCHS,
+        class_weight=weight_dict,
+        callbacks=callbacks
+    )
+
+    print("\n✅ Training Complete. The best model has been saved to the 'saved_models' folder.")
+
+if __name__ == "__main__":
+    main()
