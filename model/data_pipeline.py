@@ -7,7 +7,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 
 # --- CONFIGURATION ---
-BASE_DIR = Path(__file__).resolve().parent.parent / "data" / "processed" / "augmented"
+ROOT_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = ROOT_DIR / "data" / "processed" 
+print(f"DEBUG: Looking for data in: {BASE_DIR}")
+
+# --- CONSTANTS ---
 CATEGORIES = {"belly_pain": 0, "burping": 1, "discomfort": 2, "hungry": 3, "tired": 4}
 BATCH_SIZE = 32
 
@@ -37,25 +41,51 @@ def build_dataset_manifest():
                 uuid_to_files[uuid] = []
             uuid_to_files[uuid].append((str(filepath), label_int))
 
-    # 1. Split the UUIDs (80% Train, 20% Val)
-    all_uuids = list(uuid_to_files.keys())
-    train_uuids, val_uuids = train_test_split(all_uuids, test_size=0.2, random_state=42)
-    
-    # 2. Flatten the splits back into lists of files
-    train_files, train_labels = [], []
-    for uid in train_uuids:
+def _flatten_uuids(uuids, uuid_to_files):
+#   Helper to convert a list of UUIDs back into flat file and label lists
+    files, labels = [], []
+    for uid in uuids:
         for filepath, label in uuid_to_files[uid]:
-            train_files.append(filepath)
-            train_labels.append(label)
-            
-    val_files, val_labels = [], []
-    for uid in val_uuids:
-        for filepath, label in uuid_to_files[uid]:
-            val_files.append(filepath)
-            val_labels.append(label)
+            files.append(filepath)
+            labels.append(label)
+    return files, labels
 
-    print(f"📊 Pipeline Built: {len(train_files)} Train segments | {len(val_files)} Val segments")
-    return train_files, train_labels, val_files, val_labels
+def build_dataset_manifest():
+    #   Returns: train_files, val_files, train_labels, val_labels, test_files, test_labels
+    uuid_to_files = {}  # { "UUID": [ (filepath, label_int), ... ] }
+    
+    # 1. CRAWL AND GROUP (This populates uuid_to_files)
+    for category, label_int in CATEGORIES.items():
+        mel_dir = BASE_DIR / category / "mel"
+        if not mel_dir.exists():
+            continue
+            
+        for filepath in mel_dir.glob("*.npy"):
+            uuid = extract_uuid(filepath.name)
+            if uuid not in uuid_to_files:
+                uuid_to_files[uuid] = []
+            uuid_to_files[uuid].append((str(filepath), label_int))
+
+    # 2. SPLIT THE UUIDs (Now that the dictionary is full)
+    all_uuids = list(uuid_to_files.keys())
+    
+    # First, separate the absolute Test Set (20% of total)
+    temp_uuids, test_uuids = train_test_split(
+        all_uuids, test_size=0.2, random_state=42
+    )
+    
+    # Second, split the remaining 80% into Train and Val
+    train_uuids, val_uuids = train_test_split(
+        temp_uuids, test_size=0.2, random_state=42
+    )
+    
+    # 3. FLATTEN
+    train_files, train_labels = _flatten_uuids(train_uuids, uuid_to_files)
+    val_files, val_labels = _flatten_uuids(val_uuids, uuid_to_files)
+    test_files, test_labels = _flatten_uuids(test_uuids, uuid_to_files)
+
+    print(f"📊 Pipeline Built: {len(train_files)} Train | {len(val_files)} Val | {len(test_files)} Test")
+    return train_files, train_labels, val_files, val_labels, test_files, test_labels
 
 class MelSpecGenerator(tf.keras.utils.Sequence):
 #   Custom Keras Generator to load .npy files lazily.
