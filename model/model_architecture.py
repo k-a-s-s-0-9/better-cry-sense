@@ -47,16 +47,16 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     
     # Bidirectional LSTM looks at the sequence forwards and backwards to understand context
     x = layers.Bidirectional(layers.LSTM(64, return_sequences=True), name="bilstm_1")(x)
-    x = layers.Dropout(0.3, name="drop_lstm_1")(x)
+    x = layers.Dropout(0.5, name="drop_lstm_1")(x)
     
     # Second LSTM layer (return_sequences=False because we only need the final summarized context)
     x = layers.Bidirectional(layers.LSTM(32), name="bilstm_2")(x)
-    x = layers.Dropout(0.3, name="drop_lstm_2")(x)
+    x = layers.Dropout(0.5, name="drop_lstm_2")(x)
     # Shape is now a flat vector (64)
 
     # 5. THE CLASSIFIER HEAD
     x = layers.Dense(64, activation='relu', name="dense_1")(x)
-    x = layers.Dropout(0.4, name="drop_dense")(x)
+    x = layers.Dropout(0.5, name="drop_dense")(x)
     
     outputs = layers.Dense(num_classes, activation='softmax', name="classifier_output")(x)
 
