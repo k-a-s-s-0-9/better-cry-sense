@@ -55,7 +55,7 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     # Shape is now a flat vector (64)
 
     # 5. THE CLASSIFIER HEAD
-    x = layers.Dense(64, activation='relu', name="dense_1")(x)
+    x = layers.Dense(32, activation='relu', name="dense_1")(x)
     x = layers.Dropout(0.5, name="drop_dense")(x)
     
     outputs = layers.Dense(num_classes, activation='softmax', name="classifier_output")(x)
