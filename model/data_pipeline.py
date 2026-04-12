@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 
 # --- CONFIGURATION ---
-BASE_DIR = Path(__file__).resolve().parent / "data" / "processed"
+BASE_DIR = Path(__file__).resolve().parent.parent / "data" / "processed" / "augmented"
 CATEGORIES = {"belly_pain": 0, "burping": 1, "discomfort": 2, "hungry": 3, "tired": 4}
 BATCH_SIZE = 32
 
