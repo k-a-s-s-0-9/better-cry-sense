@@ -41,25 +41,28 @@ def build_dataset_manifest():
                 uuid_to_files[uuid] = []
             uuid_to_files[uuid].append((str(filepath), label_int))
 
-    # 1. Split the UUIDs (80% Train, 20% Val)
+    # 1. Split the UUIDs (80% for Train/Val, 20% for Test)
     all_uuids = list(uuid_to_files.keys())
-    train_uuids, val_uuids = train_test_split(all_uuids, test_size=0.2, random_state=42)
     
-    # 2. Flatten the splits back into lists of files
-    train_files, train_labels = [], []
-    for uid in train_uuids:
-        for filepath, label in uuid_to_files[uid]:
-            train_files.append(filepath)
-            train_labels.append(label)
-            
-    val_files, val_labels = [], []
-    for uid in val_uuids:
-        for filepath, label in uuid_to_files[uid]:
-            val_files.append(filepath)
-            val_labels.append(label)
+    # First, separate the absolute Test Set (20% of total)
+    # We use 20% here so we have a substantial "Final Exam"
+    temp_uuids, test_uuids = train_test_split(
+        all_uuids, test_size=0.2, random_state=42
+    )
+    
+    # Second, split the remaining 80% into Train (80%) and Val (20%)
+    # This results in: 64% Train, 16% Val, 20% Test of the original total
+    train_uuids, val_uuids = train_test_split(
+        temp_uuids, test_size=0.2, random_state=42
+    )
+    
+    # 2. Flatten the splits into lists
+    train_files, train_labels = self._flatten_uuids(train_uuids, uuid_to_files)
+    val_files, val_labels = self._flatten_uuids(val_uuids, uuid_to_files)
+    test_files, test_labels = self._flatten_uuids(test_uuids, uuid_to_files)
 
-    print(f"📊 Pipeline Built: {len(train_files)} Train segments | {len(val_files)} Val segments")
-    return train_files, train_labels, val_files, val_labels
+    print(f"📊 Pipeline Built: {len(train_files)} Train | {len(val_files)} Val | {len(test_files)} Test")
+    return train_files, train_labels, val_files, val_labels, test_files, test_labels
 
 class MelSpecGenerator(tf.keras.utils.Sequence):
 #   Custom Keras Generator to load .npy files lazily.
