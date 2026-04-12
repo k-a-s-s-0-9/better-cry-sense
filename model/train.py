@@ -102,7 +102,7 @@ def main():
     print("\n✅ Training Complete. The best model has been saved to the 'saved_models' folder.")
 
     print("\n🏆 Running Final Evaluation on Unseen Test Set...")
-    test_generator = MelSpecGenerator(test_files, test_labels, batch_size=BATCH_SIZE, shuffle=False)
+
     test_results = model.evaluate(test_generator)
     print(f"Test Accuracy: {test_results[1]:.4f}")
     print(f"Test AUC: {test_results[2]:.4f}")
