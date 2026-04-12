@@ -58,9 +58,8 @@ def build_dataset_manifest():
     return train_files, train_labels, val_files, val_labels
 
 class MelSpecGenerator(tf.keras.utils.Sequence):
-    """
-    Custom Keras Generator to load .npy files lazily.
-    """
+#   Custom Keras Generator to load .npy files lazily.
+
     def __init__(self, filepaths, labels, batch_size=32, shuffle=True):
         self.filepaths = np.array(filepaths)
         self.labels = np.array(labels)

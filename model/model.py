@@ -72,7 +72,9 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
             tf.keras.metrics.AUC(name='auc'),
             tf.keras.metrics.Precision(name='prc'),
             tf.keras.metrics.Recall(name='recall'),
-            tf.keras.metrics.F1Score(name='f1')
+            tf.keras.metrics.F1Score(name='f1'),
+            tf.keras.metrics.MeanAbsoluteError(name='mae'),
+            tf.keras.metrics.MeanSquaredError(name='mse')
         ]
     )
     
