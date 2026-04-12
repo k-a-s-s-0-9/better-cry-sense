@@ -104,6 +104,7 @@ def main():
     print("\n🏆 Running Final Evaluation on Unseen Test Set...")
 
     test_results = model.evaluate(test_generator)
+    print("\n--- TEST SET METRICS ---")
     print(f"Test Accuracy: {test_results[1]:.4f}")
     print(f"Test AUC: {test_results[2]:.4f}")
     print(f"Test Precision: {test_results[3]:.4f}")
