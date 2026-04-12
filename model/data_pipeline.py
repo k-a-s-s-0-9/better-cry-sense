@@ -41,25 +41,48 @@ def build_dataset_manifest():
                 uuid_to_files[uuid] = []
             uuid_to_files[uuid].append((str(filepath), label_int))
 
-    # 1. Split the UUIDs (80% for Train/Val, 20% for Test)
+def _flatten_uuids(uuids, uuid_to_files):
+#   Helper to convert a list of UUIDs back into flat file and label lists
+    files, labels = [], []
+    for uid in uuids:
+        for filepath, label in uuid_to_files[uid]:
+            files.append(filepath)
+            labels.append(label)
+    return files, labels
+
+def build_dataset_manifest():
+    #   Returns: train_files, val_files, train_labels, val_labels, test_files, test_labels
+    uuid_to_files = {}  # { "UUID": [ (filepath, label_int), ... ] }
+    
+    # 1. CRAWL AND GROUP (This populates uuid_to_files)
+    for category, label_int in CATEGORIES.items():
+        mel_dir = BASE_DIR / category / "mel"
+        if not mel_dir.exists():
+            continue
+            
+        for filepath in mel_dir.glob("*.npy"):
+            uuid = extract_uuid(filepath.name)
+            if uuid not in uuid_to_files:
+                uuid_to_files[uuid] = []
+            uuid_to_files[uuid].append((str(filepath), label_int))
+
+    # 2. SPLIT THE UUIDs (Now that the dictionary is full)
     all_uuids = list(uuid_to_files.keys())
     
     # First, separate the absolute Test Set (20% of total)
-    # We use 20% here so we have a substantial "Final Exam"
     temp_uuids, test_uuids = train_test_split(
         all_uuids, test_size=0.2, random_state=42
     )
     
-    # Second, split the remaining 80% into Train (80%) and Val (20%)
-    # This results in: 64% Train, 16% Val, 20% Test of the original total
+    # Second, split the remaining 80% into Train and Val
     train_uuids, val_uuids = train_test_split(
         temp_uuids, test_size=0.2, random_state=42
     )
     
-    # 2. Flatten the splits into lists
-    train_files, train_labels = self._flatten_uuids(train_uuids, uuid_to_files)
-    val_files, val_labels = self._flatten_uuids(val_uuids, uuid_to_files)
-    test_files, test_labels = self._flatten_uuids(test_uuids, uuid_to_files)
+    # 3. FLATTEN
+    train_files, train_labels = _flatten_uuids(train_uuids, uuid_to_files)
+    val_files, val_labels = _flatten_uuids(val_uuids, uuid_to_files)
+    test_files, test_labels = _flatten_uuids(test_uuids, uuid_to_files)
 
     print(f"📊 Pipeline Built: {len(train_files)} Train | {len(val_files)} Val | {len(test_files)} Test")
     return train_files, train_labels, val_files, val_labels, test_files, test_labels
