@@ -27,7 +27,7 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     x = layers.GlobalAveragePooling2D()(x) 
     
     # 4. CLASSIFIER HEAD
-    x = layers.Dense(32, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(x)
+    x = layers.Dense(32, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(num_classes, activation='softmax', name="classifier_output")(x)
 
