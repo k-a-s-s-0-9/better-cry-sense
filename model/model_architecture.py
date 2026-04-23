@@ -6,36 +6,44 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     inputs = layers.Input(shape=input_shape, name="mel_input")
 
     # 2. THE SPATIAL BRANCH (CNN)
-    # Block 1: Basic textures
+    # Block 1
     x = layers.Conv2D(16, (3, 3), padding='same', activation='relu')(inputs)
     x = layers.BatchNormalization()(x)
     x = layers.MaxPooling2D((2, 2))(x)
-    x = layers.SpatialDropout2D(0.1)(x)
-
-    # Block 2: Patterns
-    x = layers.Conv2D(24, (3, 3), padding='same', activation='relu')(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.MaxPooling2D((2, 2))(x)
-    x = layers.SpatialDropout2D(0.1)(x)
-
-    # Block 3: High-level features
+    
+    # Block 2
     x = layers.Conv2D(32, (3, 3), padding='same', activation='relu')(x)
     x = layers.BatchNormalization()(x)
-    
-    # 3. THE SQUEEZE (Replaces Bridge & LSTM)
-    # This collapses all spatial/temporal features into one 'vibe' vector per class.
-    x = layers.GlobalAveragePooling2D()(x) 
-    
-    # 4. CLASSIFIER HEAD
+    x = layers.MaxPooling2D((2, 2))(x)
+
+    # Block 3
+    x = layers.Conv2D(64, (3, 3), padding='same', activation='relu')(x)
+    x = layers.BatchNormalization()(x)
+    # Pool heavily on frequency to leave a clean time-sequence
+    x = layers.MaxPooling2D(pool_size=(4, 2))(x) 
+
+    # 3. THE BRIDGE (Reshape to Sequence)
+    # After pooling, your shape is (8, 10, 64). We flatten height (8) into filters (64).
+    shape = x.shape
+    time_steps = shape[2] 
+    features = shape[1] * shape[3] 
+    x = layers.Reshape((time_steps, features))(x) # Shape: (10, 512)
+
+    # 4. THE TEMPORAL BRANCH (LSTM)
+    # return_sequences=False is MANDATORY here to fix the Rank Mismatch error.
+    # We use 64 units—enough to learn patterns, but small enough to avoid total memorization.
+    x = layers.Bidirectional(layers.LSTM(64, return_sequences=False), name="bilstm_final")(x)
+    x = layers.Dropout(0.3)(x)
+
+    # 5. CLASSIFIER HEAD
     x = layers.Dense(32, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(num_classes, activation='softmax', name="classifier_output")(x)
 
-    model = Model(inputs=inputs, outputs=outputs, name="Squeezed_Cry_Sense")
+    model = Model(inputs=inputs, outputs=outputs, name="CRNN_Cry_Sense")
 
-    # Compile with safer metric names
     model.compile(
-        optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
+        optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4), # Stable 0.0001
         loss='categorical_crossentropy',
         metrics=[
             'accuracy', 
@@ -44,7 +52,3 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
         ]
     )
     return model
-
-if __name__ == "__main__":
-    model = build_crnn_model()
-    model.summary()
