@@ -66,8 +66,9 @@ def main():
     callbacks = [
         # Stops training if Validation Loss doesn't improve for 8 epochs
         tf.keras.callbacks.EarlyStopping(
-            monitor='val_loss',
-            patience=8,
+            monitor='val_auc',
+            mode='max',
+            patience=10,
             restore_best_weights=True,
             verbose=1
         ),
