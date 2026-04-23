@@ -43,7 +43,7 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     # Goal: Analyze the rhythm and duration of the cry
     
     # Bidirectional LSTM looks at the sequence forwards and backwards to understand context
-    x = layers.Bidirectional(layers.LSTM(64, return_sequences=True), name="bilstm")(x)
+    x = layers.Bidirectional(layers.LSTM(64, return_sequences=False), name="bilstm")(x)
     x = layers.Dropout(0.2, name="drop_lstm")(x)
 
     # Shape is now a flat vector (64)
