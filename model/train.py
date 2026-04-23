@@ -38,8 +38,8 @@ def main():
 
     weight_dict = {
         0: 1.5,  # belly_pain (96 samples)
-        1: 3.5,  # burping (50 samples) - Capped at 3.5 to keep gradients stable
-        2: 3.0,  # discomfort (54 samples)
+        1: 3.7,  # burping (50 samples) - Capped at 3.5 to keep gradients stable
+        2: 3.2,  # discomfort (54 samples)
         3: 0.6,  # hungry (382 samples) - Enough weight to remain a 'baseline'
         4: 1.5   # tired (96 samples)
     }
