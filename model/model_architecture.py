@@ -35,7 +35,7 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
 
     # Compile with safer metric names
     model.compile(
-        optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+        optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001(1e-4)),
         loss='categorical_crossentropy',
         metrics=[
             'accuracy', 
