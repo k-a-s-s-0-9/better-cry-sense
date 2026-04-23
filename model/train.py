@@ -113,7 +113,7 @@ def main():
     test_results = model.evaluate(test_generator)
     print("\n--- TEST SET METRICS ---")
     print(f"Test Accuracy: {test_results[1]:.4f}")
-    print(f"Test AUC: {test_results[2]:.4f}")
+    print(f"Test AUC:      {test_results[2]:.4f}")
     print(f"Test F1 Score: {test_results[3]:.4f}") 
 
 if __name__ == "__main__":
