@@ -68,9 +68,10 @@ def main():
         tf.keras.callbacks.EarlyStopping(
             monitor='val_auc',
             mode='max',
-            patience=10,
+            patience=15,
             restore_best_weights=True,
-            verbose=1
+            verbose=1,
+            start_from_epoch=5
         ),
         # Saves the absolute best version of the model to your hard drive
         tf.keras.callbacks.ModelCheckpoint(
