@@ -113,9 +113,7 @@ def main():
     print("\n--- TEST SET METRICS ---")
     print(f"Test Accuracy: {test_results[1]:.4f}")
     print(f"Test AUC: {test_results[2]:.4f}")
-    print(f"Test Precision: {test_results[3]:.4f}")
-    print(f"Test Recall: {test_results[4]:.4f}")
-    print(f"Test F1 Score: {np.mean(test_results[5]):.4f}")
+    print(f"Test F1 Score: {test_results[3]:.4f}") 
 
 if __name__ == "__main__":
     main()
