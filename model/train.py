@@ -80,7 +80,7 @@ def main():
         ),
         # Automatically lowers the learning rate if the model gets "stuck"
         tf.keras.callbacks.ReduceLROnPlateau(
-            monitor='val_loss',
+            monitor='val_f1',
             factor=0.5,
             patience=4,
             min_lr=1e-6,
