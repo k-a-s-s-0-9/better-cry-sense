@@ -82,12 +82,12 @@ def main():
         ),
         # Automatically lowers the learning rate if the model gets "stuck"
         tf.keras.callbacks.ReduceLROnPlateau(
-            monitor='val_f1',
+            monitor='val_auc', 
             factor=0.5,
-            patience=4,
-            min_lr=1e-6,
+            patience=8,        
+            min_lr=1e-5,      
             verbose=1
-        ),
+),
         tf.keras.callbacks.CSVLogger(
             filename='training_log.csv',
             separator=',',
