@@ -11,23 +11,20 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     # Goal: Extract local frequency patterns (pitch slopes, bursts)
     
     # Block 1
-    x = layers.Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu', name="conv_1")(inputs)
+    x = layers.Conv2D(16, kernel_size=(3, 3), padding='same', activation='relu', name="conv_1")(inputs)
     x = layers.BatchNormalization(name="bn_1")(x)
     x = layers.MaxPooling2D(pool_size=(2, 2), name="pool_1")(x) 
-    # Shape is now roughly (64, 43, 32)
 
     # Block 2
-    x = layers.Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu', name="conv_2")(x)
+    x = layers.Conv2D(32, kernel_size=(3, 3), padding='same', activation='relu', name="conv_2")(x)
     x = layers.BatchNormalization(name="bn_2")(x)
     x = layers.MaxPooling2D(pool_size=(2, 2), name="pool_2")(x)
-    # Shape is now roughly (32, 21, 64)
 
     # Block 3
-    x = layers.Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu', name="conv_3")(x)
+    x = layers.Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu', name="conv_3")(x)
     x = layers.BatchNormalization(name="bn_3")(x)
     # We pool heavily on the frequency axis (4) to squash it, but gently on time (2) to preserve sequence
     x = layers.MaxPooling2D(pool_size=(4, 2), name="pool_3")(x)
-    # Shape is now roughly (8, 10, 128)
 
     # 3. THE BRIDGE (Reshape)
     # Goal: Convert 3D CNN output into 2D Sequence for LSTM
