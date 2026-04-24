@@ -4,6 +4,9 @@ import numpy as np
 import tensorflow as tf
 from pathlib import Path
 from sklearn.utils.class_weight import compute_class_weight
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Import your custom modules
 from data_pipeline import build_dataset_manifest, MelSpecGenerator
@@ -21,6 +24,42 @@ def setup_gpu():
             print(f"⚠️ GPU Setup Error: {e}")
     else:
         print("⚠️ No GPU detected. Training will run on CPU (this will be slower).")
+
+def run_detailed_diagnostics(model, test_generator):
+    print("📊 Generating Confusion Matrix and Classification Report...")
+    
+    y_true = []
+    y_pred = []
+    
+    # Iterate through the test generator
+    for i in range(len(test_generator)):
+        x, y = test_generator[i]
+        preds = model.predict(x, verbose=0)
+        
+        # Convert one-hot to class indices
+        y_true.extend(np.argmax(y, axis=1))
+        y_pred.extend(np.argmax(preds, axis=1))
+    
+    # Define labels based on your dataset structure
+    class_names = ['belly_pain', 'burping', 'discomfort', 'hungry', 'tired']
+    
+    # 1. Compute the Confusion Matrix
+    cm = confusion_matrix(y_true, y_pred)
+    
+    # 2. Plotting
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=class_names,
+                yticklabels=class_names)
+    plt.xlabel('Predicted Label (Model Guessed)')
+    plt.ylabel('True Label (Actual Reason)')
+    plt.title('Better Cry Sense: Confusion Matrix')
+    plt.show()
+
+    # 3. Textual Report (Precision, Recall, F1 per class)
+    print("\n📝 Per-Class Performance Report:")
+    print(classification_report(y_true, y_pred, target_names=class_names))
+
 
 def main():
     print("🚀 Initiating Better Cry Sense Training Sequence...")
