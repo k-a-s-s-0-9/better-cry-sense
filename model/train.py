@@ -53,7 +53,13 @@ def run_detailed_diagnostics(model, test_generator):
     # 2. Fix the report by passing the 'labels' parameter
     print("\n📝 Per-Class Performance Report:")
     # THIS LINE FIXES THE ERROR
-    print(classification_report(y_true, y_pred, target_names=class_names, labels=labels))
+    print(classification_report(
+    y_true, 
+    y_pred, 
+    target_names=class_names, 
+    labels=[0, 1, 2, 3, 4], 
+    zero_division=0
+    ))
 
 def main():
     print("🚀 Initiating Better Cry Sense Training Sequence...")
