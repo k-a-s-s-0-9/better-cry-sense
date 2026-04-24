@@ -5,14 +5,19 @@ import tensorflow as tf
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 
-# --- CONSTANTS ---
+# --- CONFIGURATION ---
+# This defines where the script looks for your processed .npy files
+ROOT_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = ROOT_DIR / "data" / "processed" 
 CATEGORIES = {"belly_pain": 0, "burping": 1, "discomfort": 2, "hungry": 3, "tired": 4}
 
 def extract_uuid(filename):
+    """Extracts the 36-character UUID from the filename."""
     match = re.search(r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', filename)
     return match.group(0) if match else "UNKNOWN"
 
 def _flatten_uuids(uuids, uuid_to_files):
+    """Helper to convert a list of UUIDs back into flat file and label lists."""
     files, labels = [], []
     for uid in uuids:
         for filepath, label in uuid_to_files[uid]:
@@ -21,31 +26,36 @@ def _flatten_uuids(uuids, uuid_to_files):
     return files, labels
 
 def build_dataset_manifest():
-    uuid_to_files = {}  # { "UUID": [ (filepath, label_int), ... ] }
-    uuid_to_label = {}  # { "UUID": label_int } - Needed for stratification
+    """Crawls directories and performs stratified split by UUID."""
+    uuid_to_files = {}  
+    uuid_to_label = {}  # Tracks the class of the baby for stratification
     
+    print(f"DEBUG: Scanning directories in {BASE_DIR}...")
+
     # 1. CRAWL AND GROUP
     for category, label_int in CATEGORIES.items():
         mel_dir = BASE_DIR / category / "mel"
-        if not mel_dir.exists(): continue
+        if not mel_dir.exists():
+            print(f"WARNING: Directory not found: {mel_dir}")
+            continue
             
         for filepath in mel_dir.glob("*.npy"):
             uuid = extract_uuid(filepath.name)
             if uuid not in uuid_to_files:
                 uuid_to_files[uuid] = []
-                uuid_to_label[uuid] = label_int # Associate the baby with their class
+                uuid_to_label[uuid] = label_int
             uuid_to_files[uuid].append((str(filepath), label_int))
 
-    # 2. STRATIFIED SPLIT
+    # 2. STRATIFIED SPLIT BY UUID
     all_uuids = list(uuid_to_files.keys())
     labels_per_uuid = [uuid_to_label[uid] for uid in all_uuids]
     
-    # Stratified split ensures 'belly_pain' babies are represented in all sets
-    temp_uuids, test_uuids, temp_labels, test_labels_uuid = train_test_split(
+    # Split 20% for Test (Stratified)
+    temp_uuids, test_uuids, temp_labels, _ = train_test_split(
         all_uuids, labels_per_uuid, test_size=0.2, stratify=labels_per_uuid, random_state=42
     )
     
-    # Split remaining 80% into Train and Val
+    # Split remaining into Train (80%) and Val (20%) (Stratified)
     train_uuids, val_uuids, _, _ = train_test_split(
         temp_uuids, temp_labels, test_size=0.2, stratify=temp_labels, random_state=42
     )
@@ -59,6 +69,7 @@ def build_dataset_manifest():
     return train_files, train_labels, val_files, val_labels, test_files, test_labels
 
 class MelSpecGenerator(tf.keras.utils.Sequence):
+    """Custom Keras Generator with Min-Max Scaling."""
     def __init__(self, filepaths, labels, batch_size=32, shuffle=True):
         self.filepaths = np.array(filepaths)
         self.labels = np.array(labels)
@@ -76,7 +87,8 @@ class MelSpecGenerator(tf.keras.utils.Sequence):
 
     def on_epoch_end(self):
         self.indexes = np.arange(len(self.filepaths))
-        if self.shuffle: np.random.shuffle(self.indexes)
+        if self.shuffle:
+            np.random.shuffle(self.indexes)
 
     def __data_generation(self, batch_filepaths, batch_labels):
         X = []
@@ -85,10 +97,9 @@ class MelSpecGenerator(tf.keras.utils.Sequence):
         for path in batch_filepaths:
             mel_spec = np.load(path)
             
-            # --- CRITICAL CHANGE: MIN-MAX SCALING (0 to 1) ---
-            # This prevents raw decibel values from exploding the gradients
+            # SCALING: Normalize to 0.0 - 1.0 range
             m_min, m_max = mel_spec.min(), mel_spec.max()
-            if m_max - m_min > 1e-6: # Prevent division by zero
+            if m_max - m_min > 1e-6:
                 mel_spec = (mel_spec - m_min) / (m_max - m_min)
             
             X.append(np.expand_dims(mel_spec, axis=-1))
