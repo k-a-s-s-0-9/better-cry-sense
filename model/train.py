@@ -31,35 +31,29 @@ def run_detailed_diagnostics(model, test_generator):
     y_true = []
     y_pred = []
     
-    # Iterate through the test generator
     for i in range(len(test_generator)):
         x, y = test_generator[i]
         preds = model.predict(x, verbose=0)
-        
-        # Convert one-hot to class indices
         y_true.extend(np.argmax(y, axis=1))
         y_pred.extend(np.argmax(preds, axis=1))
     
-    # Define labels based on your dataset structure
     class_names = ['belly_pain', 'burping', 'discomfort', 'hungry', 'tired']
+    # Define the range of labels we expect (0, 1, 2, 3, 4)
+    labels = [0, 1, 2, 3, 4] 
     
-    # 1. Compute the Confusion Matrix
-    cm = confusion_matrix(y_true, y_pred)
+    # 1. Compute the Confusion Matrix with explicit labels
+    cm = confusion_matrix(y_true, y_pred, labels=labels)
     
-    # 2. Plotting
     plt.figure(figsize=(10, 8))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=class_names,
                 yticklabels=class_names)
-    plt.xlabel('Predicted Label (Model Guessed)')
-    plt.ylabel('True Label (Actual Reason)')
-    plt.title('Better Cry Sense: Confusion Matrix')
     plt.show()
 
-    # 3. Textual Report (Precision, Recall, F1 per class)
+    # 2. Fix the report by passing the 'labels' parameter
     print("\n📝 Per-Class Performance Report:")
-    print(classification_report(y_true, y_pred, target_names=class_names))
-
+    # THIS LINE FIXES THE ERROR
+    print(classification_report(y_true, y_pred, target_names=class_names, labels=labels))
 
 def main():
     print("🚀 Initiating Better Cry Sense Training Sequence...")
