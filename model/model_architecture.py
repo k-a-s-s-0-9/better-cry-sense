@@ -1,6 +1,21 @@
 import tensorflow as tf
 from keras import layers, Model
 
+def focal_loss(gamma=2.0, alpha=0.25):
+    def focal_loss_fixed(y_true, y_pred):
+        y_true = tf.cast(y_true, tf.float32)
+        # Prevent log(0)
+        epsilon = tf.keras.backend.epsilon()
+        y_pred = tf.clip_by_value(y_pred, epsilon, 1. - epsilon)
+        
+        # Calculate cross entropy
+        cross_entropy = -y_true * tf.math.log(y_pred)
+        
+        # Calculate focal loss modulating factor
+        loss = alpha * tf.math.pow(1 - y_pred, gamma) * cross_entropy
+        return tf.math.reduce_sum(loss, axis=-1)
+    return focal_loss_fixed
+
 def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     inputs = layers.Input(shape=input_shape, name="mel_input")
 
@@ -42,12 +57,8 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     model = Model(inputs=inputs, outputs=outputs, name="Lean_CRNN_Cry_Sense")
 
     model.compile(
-        optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
-        loss='categorical_crossentropy',
-        metrics=[
-            'accuracy', 
-            tf.keras.metrics.AUC(name='auc'),
-            tf.keras.metrics.F1Score(average='macro', name='f1')
-        ]
+    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
+    loss=focal_loss(gamma=2.0, alpha=0.25),
+    metrics=['accuracy', tf.keras.metrics.AUC(name='auc'), tf.keras.metrics.F1Score(average='macro', name='f1')]
     )
     return model
