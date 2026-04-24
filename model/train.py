@@ -156,5 +156,13 @@ def main():
     print(f"Test AUC:      {test_results[2]:.4f}")
     print(f"Test F1 Score: {test_results[3]:.4f}") 
 
+    # ... after history = model.fit() ...
+
+    print("\n🏆 Final Evaluation...")
+    # This evaluates the best model restored by EarlyStopping
+    test_results = model.evaluate(test_generator)
+
+    # Call the diagnostic function here
+    run_detailed_diagnostics(model, test_generator)
 if __name__ == "__main__":
     main()
