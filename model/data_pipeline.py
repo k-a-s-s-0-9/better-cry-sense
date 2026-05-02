@@ -99,7 +99,7 @@ class MelSpecGenerator(tf.keras.utils.Sequence):
                 
         # 3. Duplicate the minority indices to "balance" the epoch
         # This forces the model to see minority classes 3x more often
-        oversampled_indices = minority_indices * 3 
+        oversampled_indices = minority_indices * 1.5 
         
         # 4. Combine and Shuffle
         self.indexes = np.concatenate([base_indexes, oversampled_indices])
