@@ -85,7 +85,7 @@ class MelSpecGenerator(tf.keras.utils.Sequence):
         indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
         return self.__data_generation(self.filepaths[indexes], self.labels[indexes])
 
-def on_epoch_end(self):
+    def on_epoch_end(self):
         """Updates indexes after each epoch and OVER-SAMPLES minority classes."""
         # 1. Start with the base indexes
         base_indexes = np.arange(len(self.filepaths))
