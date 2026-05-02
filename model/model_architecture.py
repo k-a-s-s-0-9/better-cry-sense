@@ -40,14 +40,15 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     features = shape[1] * shape[3] 
     x = layers.Reshape((time_steps, features))(x) 
 
-    # 3. THE "GUTTED" LSTM
-    # - Slashing units to 16: It can only "remember" a tiny summary.
-    # - Single Direction: Less parameters than Bidirectional.
-    # - L2 Regularization: Punishes complex internal weights.
-    x = layers.LSTM(64, 
-                    return_sequences=False, 
-                    kernel_regularizer=tf.keras.regularizers.l2(0.01),
-                    name="lstm_bottleneck")(x)
+    # 3. THE Bidirectional LSTM
+    # 1. Spatial Dropout: Drops entire feature maps, great for audio/Conv outputs
+    x = layers.SpatialDropout2D(0.3)(x) 
+    x = layers.Reshape((-1, x.shape[-1] * x.shape[-2]))(x)
+
+    # 2. The Bi-LSTM: 32 units (doubled to 64 internally)
+    x = layers.Bidirectional(layers.LSTM(32, return_sequences=False, name="bi_lstm_core"))(x)
+
+    # 3. Heavy Dropout: The "handbrake" on overfitting
     x = layers.Dropout(0.5)(x)
 
     # 4. CLASSIFIER HEAD
