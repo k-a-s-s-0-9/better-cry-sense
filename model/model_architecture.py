@@ -44,11 +44,11 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     # - Slashing units to 16: It can only "remember" a tiny summary.
     # - Single Direction: Less parameters than Bidirectional.
     # - L2 Regularization: Punishes complex internal weights.
-    x = layers.LSTM(16, 
+    x = layers.LSTM(64, 
                     return_sequences=False, 
                     kernel_regularizer=tf.keras.regularizers.l2(0.01),
                     name="lstm_bottleneck")(x)
-    x = layers.Dropout(0.4)(x)
+    x = layers.Dropout(0.5)(x)
 
     # 4. CLASSIFIER HEAD
     x = layers.Dense(16, activation='relu')(x) # Shrinking this too
