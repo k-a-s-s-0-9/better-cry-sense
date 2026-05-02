@@ -85,11 +85,28 @@ class MelSpecGenerator(tf.keras.utils.Sequence):
         indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
         return self.__data_generation(self.filepaths[indexes], self.labels[indexes])
 
-    def on_epoch_end(self):
-        self.indexes = np.arange(len(self.filepaths))
+def on_epoch_end(self):
+        """Updates indexes after each epoch and OVER-SAMPLES minority classes."""
+        # 1. Start with the base indexes
+        base_indexes = np.arange(len(self.filepaths))
+        
+        # 2. Identify where the minority classes are
+        # CATEGORIES: belly_pain=0, burping=1, discomfort=2, hungry=3, tired=4
+        minority_indices = []
+        for i, label in enumerate(self.labels):
+            if label in [0, 1, 2, 4]:  # Everything EXCEPT Hungry
+                minority_indices.append(i)
+                
+        # 3. Duplicate the minority indices to "balance" the epoch
+        # This forces the model to see minority classes 3x more often
+        oversampled_indices = minority_indices * 3 
+        
+        # 4. Combine and Shuffle
+        self.indexes = np.concatenate([base_indexes, oversampled_indices])
+        
         if self.shuffle:
             np.random.shuffle(self.indexes)
-
+            
     def __data_generation(self, batch_filepaths, batch_labels):
         X = []
         y = tf.keras.utils.to_categorical(batch_labels, num_classes=self.num_classes)
