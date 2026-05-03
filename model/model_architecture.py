@@ -42,7 +42,7 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
 
     # 3. THE Bidirectional LSTM
     # 1. Spatial Dropout: Drops entire feature maps, great for audio/Conv outputs
-    x = layers.SpatialDropout2D(0.3)(x) 
+    x = layers.SpatialDropout1D(0.3)(x) 
     x = layers.Reshape((-1, x.shape[-1] * x.shape[-2]))(x)
 
     # 2. The Bi-LSTM: 32 units (doubled to 64 internally)
