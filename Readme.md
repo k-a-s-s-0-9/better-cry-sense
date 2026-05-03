@@ -119,12 +119,10 @@ Goal: Build and optimize the CNN + LSTM hybrid.
 
     Task 3.4: Evaluate using Confusion Matrices and F1-Scores (vital for imbalanced data).
 
-## Phase 4: Optimization & Deployment
+## Phase 4: Optimization and Documentation
 
 Goal: Finalize the "Applied" aspect of the project.
 
     Task 4.1: Hyperparameter Tuning: Optimize dropout rates and hidden unit sizes.
-
-    Task 4.2: Develop a Streamlit/Gradio App for real-time file uploads and predictions.
 
     Task 4.3: Document results and prepare the final presentation/report.
