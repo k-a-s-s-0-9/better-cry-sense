@@ -118,7 +118,22 @@ class MelSpecGenerator(tf.keras.utils.Sequence):
             m_min, m_max = mel_spec.min(), mel_spec.max()
             if m_max - m_min > 1e-6:
                 mel_spec = (mel_spec - m_min) / (m_max - m_min)
-            
+                
+            # 🚀 NEW: SPECAUGMENT (Only apply during training)
+            # self.shuffle is True for Train, False for Val/Test
+            if self.shuffle: 
+                # 1. Frequency Masking (30% chance)
+                if np.random.rand() < 0.30: 
+                    f_width = np.random.randint(3, 12) # Mask 3 to 12 freq bins
+                    f_start = np.random.randint(0, mel_spec.shape[0] - f_width)
+                    mel_spec[f_start:f_start+f_width, :] = 0.0 
+                    
+                # 2. Time Masking (30% chance)
+                if np.random.rand() < 0.30:
+                    t_width = np.random.randint(3, 12) # Mask 3 to 12 time steps
+                    t_start = np.random.randint(0, mel_spec.shape[1] - t_width)
+                    mel_spec[:, t_start:t_start+t_width] = 0.0
+
             X.append(np.expand_dims(mel_spec, axis=-1))
 
         return np.array(X), y
