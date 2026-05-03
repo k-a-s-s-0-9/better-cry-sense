@@ -41,12 +41,21 @@ def build_crnn_model(input_shape=(128, 87, 1), num_classes=5):
     x = layers.Reshape((time_steps, features))(x) 
 
     # 3. THE Bidirectional LSTM
-    # 1. Spatial Dropout: Drops entire feature maps, great for audio/Conv outputs
+    # 1. Spatial Dropout: Drops entire feature maps to force feature diversity
     x = layers.SpatialDropout1D(0.3)(x) 
+    
+    # NEW: BN before Reshape to ensure CNN features are normalized
+    x = layers.BatchNormalization(name="bn_pre_lstm")(x)
+    
+    # Reshape for LSTM (Time, Features)
     x = layers.Reshape((-1, x.shape[-1] * x.shape[-2]))(x)
 
-    # 2. The Bi-LSTM: 32 units (doubled to 64 internally)
+    # 2. The Bi-LSTM: 64 total units of rhythmic memory
     x = layers.Bidirectional(layers.LSTM(32, return_sequences=False, name="bi_lstm_core"))(x)
+
+    # BN after LSTM to stabilize the 64-unit bottleneck
+    # crucial for preventing the model from over-indexing on specific training babies.
+    x = layers.BatchNormalization(name="bn_post_lstm")(x)
 
     # 3. Heavy Dropout: The "handbrake" on overfitting
     x = layers.Dropout(0.5)(x)
