@@ -76,11 +76,11 @@ def main():
     classes = np.unique(train_labels)
 
     weight_dict = {
-        0: 1.0,  # belly_pain (96 samples)
-        1: 1.0,  # burping (50 samples) - Capped at 3.5 to keep gradients stable
-        2: 1.5,  # discomfort (54 samples)
+        0: 1.2,  # belly_pain (96 samples)
+        1: 1.5,  # burping (50 samples) - Capped at 3.5 to keep gradients stable
+        2: 1.2,  # discomfort (54 samples)
         3: 0.8,  # hungry (382 samples) - Enough weight to remain a 'baseline'
-        4: 1.5   # tired (96 samples)
+        4: 1.2   # tired (96 samples)
     }
     
     for class_id, weight in weight_dict.items():
