@@ -126,3 +126,13 @@ Goal: Finalize the "Applied" aspect of the project.
     Task 4.1: Hyperparameter Tuning: Optimize dropout rates and hidden unit sizes.
 
     Task 4.3: Document results and prepare the final presentation/report.
+
+# Final Results
+
+The final model achieved high discriminative power, moving beyond simple majority-class guessing to a balanced, multi-class understanding.
+
+Metric	            Value
+Test Accuracy	    70.00%
+ROC-AUC	            0.9113
+Macro F1-Score	    0.6990
+Final Loss	        0.1146
