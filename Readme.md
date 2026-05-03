@@ -131,8 +131,8 @@ Goal: Finalize the "Applied" aspect of the project.
 
 The final model achieved high discriminative power, moving beyond simple majority-class guessing to a balanced, multi-class understanding.
 
-Metric	            Value
-Test Accuracy	    70.00%
-ROC-AUC	            0.9113
-Macro F1-Score	    0.6990
-Final Loss	        0.1146
+Metric	                Value
+* Test Accuracy	        70.00%
+* ROC-AUC	            0.9113
+* Macro F1-Score	    0.6990
+* Final Loss	        0.1146
